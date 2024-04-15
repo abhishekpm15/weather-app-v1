@@ -17,9 +17,12 @@ import Cloud from "../assets/cloud.png"
 import Rain from "../assets/rain.png"
 import PartlyCloudy from "../assets/partly_cloudy.png"
 import PartlySunny from "../assets/partly_sunny.png"
+import Moon from "../assets/moon.png"
+import Clouds from "../assets/clouds.png"
+
 import fetchData from '../utils/api'
 
-const Card = () => {
+const Card = ({climate, setClimate}) => {
   const [searchText, setSearchText] = useState('')
   const [temp, setTemp] = useState(10)
   const [image, setImage] = useState(Wind)
@@ -29,20 +32,20 @@ const Card = () => {
   const [long, setLong] = useState(0)
   const [wind, setWind] = useState(0)
   const [humid, setHumid] = useState(0)
-  const [zone, setZone] = useState(null)
+  // const [climate, setClimate] = useState(null)
 
   const imageMap = {
     "01d": Sun,
-    "01n": Sun,
+    "01n": Moon,
 
     "02d": PartlySunny,
-    "02n": PartlySunny,
+    "02n": Moon,
 
     "03d": Cloud,
     "03n": Cloud,
 
     "09d": PartlyCloudy,
-    "09n": PartlyCloudy,
+    "09n": Moon,
 
     "10d": Rain,
     "10n": Rain,
@@ -79,8 +82,8 @@ const Card = () => {
       }
       else{
         console.log("Temp", temp)
-        if(temperature <= 10){
-          setImage(Rain)
+        if(temperature <= 20){
+          setImage(Clouds)
         }
         else if(temperature <= 32){
           setImage(PartlySunny)
@@ -94,17 +97,17 @@ const Card = () => {
       console.log(response)
       // console.log(response?.weather[0]?.icon[2])
       if(response?.weather[0]?.icon[2] === 'n'){
-        setZone('n')
+        setClimate(Moon)
       }
       else{
-        setZone('d')
+        setClimate(Sun)
       }
     } else {
       console.log('search text should not be empty')
     }
   }
   return (
-    <CardModal className={`w-[350px] sm:w-96 shadow-2xl shadow-cyan-300 ${temp <= 10 ? "shadow-cyan-300 " : "shadow-orange-400"}`}>
+    <CardModal className={`w-[350px] sm:w-96 shadow-2xl shadow-cyan-300 ${temp <= 20 ? "shadow-cyan-300 " : "shadow-orange-400"} ` }>
       <div className='mb-10 mt-5 w-full flex justify-center items-center relative '>
         <FaSearch className='text-gray-400 absolute left-12 sm:left-16' />
         <input
@@ -117,7 +120,7 @@ const Card = () => {
           onKeyDown={handleKeyDown}
         />
       </div>
-      <CardHeader color='white' className={`relative h-60 flex justify-center ${zone === 'n' ? "bg-gray-700" : "bg-white"}`}>
+      <CardHeader color='white' className={`relative h-60 flex justify-center`}>
         <Weather image={image} />
       </CardHeader>
       <CardBody>
